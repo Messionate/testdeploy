@@ -1,92 +1,103 @@
-import React, { Component } from 'react';
-import './App.css';
+import React, { Component } from "react";
+import "./App.css";
 
 class App extends Component {
-
-  constructor(props){
+  constructor(props) {
     super(props);
-    this.state={
-      title: 'React Simple CRUD Application',
-      act: 0,
-      index: '',
-      datas: []
-    }
-  } 
-
-  componentDidMount(){
-    this.refs.name.focus();
+    this.state = {
+      title: "React Simple CRUD Application",
+      datas: [],
+      name: "",
+      address: "",
+    };
   }
 
-  fSubmit = (e) =>{
+  // componentDidMount(){
+  //   this.state.formData.focus();
+  // }
+
+  handleOnChange = (e) => {
+    this.setState({
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  handleSubmit = (e) => {
     e.preventDefault();
-    console.log('try');
+    console.log("try");
 
     let datas = this.state.datas;
-    let name = this.refs.name.value;
-    let address = this.refs.address.value;
-
-    if(this.state.act === 0){   //new
-      let data = {
-        name, address
-      }
-      datas.push(data);
-    }else{                      //update
-      let index = this.state.index;
-      datas[index].name = name;
-      datas[index].address = address;
-    }    
+    let data = {name:this.state.name, address:this.state.address}
+  
+    datas.push(data);
 
     this.setState({
       datas: datas,
-      act: 0
     });
 
-    this.refs.myForm.reset();
-    this.refs.name.focus();
-  }
+    this.state.name = '';
+    this.state.address = '';
 
+  };
+  // Delete
   fRemove = (i) => {
     let datas = this.state.datas;
-    datas.splice(i,1);
+    datas.splice(i, 1);
     this.setState({
-      datas: datas
+      datas: datas,
     });
-
-    this.refs.myForm.reset();
-    this.refs.name.focus();
-  }
+  };
 
   fEdit = (i) => {
+    console.log(i);
     let data = this.state.datas[i];
-    this.refs.name.value = data.name;
-    this.refs.address.value = data.address;
+    console.log(data);
+    const {name,address} = data;
 
-    this.setState({
-      act: 1,
-      index: i
-    });
 
-    this.refs.name.focus();
-  }  
+  };
 
   render() {
     let datas = this.state.datas;
     return (
       <div className="App">
         <h2>{this.state.title}</h2>
-        <form ref="myForm" className="myForm">
-          <input type="text" ref="name" placeholder="your name" className="formField" />
-          <input type="text" ref="address" placeholder="your address" className="formField" />
-          <button onClick={(e)=>this.fSubmit(e)} className="myButton">submit </button>
+
+        <form className="myForm" onSubmit={this.handleSubmit}>
+          <input
+            type="text"
+            name="name"
+            placeholder="your name"
+            className="formField"
+            value={this.state.name}
+            onChange={this.handleOnChange}
+          />
+
+          <input
+            type="text"
+            name="address"
+            placeholder="Your Address"
+            className="formField"
+            value={this.state.address}
+            onChange={this.handleOnChange}
+          />
+
+          <button type="submit" className="myButton">
+            submit{" "}
+          </button>
         </form>
         <pre>
-          {datas.map((data, i) =>
+          {datas.map((data, i) => (
             <li key={i} className="myList">
-              {i+1}. {data.name}, {data.address}
-              <button onClick={()=>this.fRemove(i)} className="myListButton">remove </button>
-              <button onClick={()=>this.fEdit(i)} className="myListButton">edit </button>
+              {i + 1}. {data.name}, {data.address}
+              <button onClick={() => this.fRemove(i)} className="myListButton">
+                remove{" "}
+              </button>
+              <button onClick={() => this.fEdit(i)} className="myListButton">
+                edit{" "}
+              </button>
             </li>
-          )}
+          ))}
         </pre>
       </div>
     );
